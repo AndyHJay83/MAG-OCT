@@ -6,40 +6,89 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const placeholderPages = [
-    "https://placehold.co/800x1100?text=Page+1",
-    "https://placehold.co/800x1100?text=Page+2",
-    "https://placehold.co/800x1100?text=Page+3",
-    "https://placehold.co/800x1100?text=Page+4",
-    "https://placehold.co/800x1100?text=Page+5",
-    "https://placehold.co/800x1100?text=Page+6"
-  ];
+  const loadingOverlay = document.createElement("div");
+  loadingOverlay.className = "loading-message";
+  loadingOverlay.innerHTML = `
+    <strong>Loading magazine…</strong>
+    <span>Please wait while we render the pages.</span>
+  `;
+  flipbookElement.appendChild(loadingOverlay);
 
-  const fragment = document.createDocumentFragment();
+  const handleError = (error) => {
+    console.error("Failed to initialize flipbook:", error);
+    loadingOverlay.innerHTML = `
+      <strong>Something went wrong.</strong>
+      <span>Refresh the page or try again later.</span>
+    `;
+  };
 
-  placeholderPages.forEach((src) => {
-    const page = document.createElement("div");
-    page.className = "page";
+  const initializeFlipbook = (pageElements) => {
+    const fragment = document.createDocumentFragment();
+    pageElements.forEach((pageEl) => fragment.appendChild(pageEl));
+    flipbookElement.appendChild(fragment);
 
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = "Magazine page";
-    img.loading = "lazy";
+    try {
+      const flip = new St.PageFlip(flipbookElement, {
+        width: 800,
+        height: 1100,
+        size: "stretch",
+        showCover: true,
+        mobileScrollSupport: true
+      });
 
-    page.appendChild(img);
-    fragment.appendChild(page);
-  });
+      flip.loadFromHTML(flipbookElement.querySelectorAll(".page"));
+      loadingOverlay.remove();
+    } catch (err) {
+      handleError(err);
+    }
+  };
 
-  flipbookElement.appendChild(fragment);
+  const renderPdf = async () => {
+    if (typeof pdfjsLib === "undefined") {
+      throw new Error("PDF.js library failed to load.");
+    }
 
-  const flip = new St.PageFlip(flipbookElement, {
-    width: 800,
-    height: 1100,
-    size: "stretch",
-    showCover: true,
-    mobileScrollSupport: true
-  });
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js";
 
-  flip.loadFromHTML(flipbookElement.querySelectorAll(".page"));
+    const pdfUrl = "./assets/magazine.pdf";
+    const loadingTask = pdfjsLib.getDocument(pdfUrl);
+    const pdf = await loadingTask.promise;
+    const pageElements = [];
+    const targetWidth = 800;
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 1 });
+      const scale = targetWidth / viewport.width;
+      const scaledViewport = page.getViewport({ scale });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+
+      canvas.width = Math.floor(scaledViewport.width);
+      canvas.height = Math.floor(scaledViewport.height);
+
+      await page.render({
+        canvasContext: context,
+        viewport: scaledViewport,
+        intent: "display"
+      }).promise;
+
+      const pageWrapper = document.createElement("div");
+      pageWrapper.className = "page";
+
+      const image = document.createElement("img");
+      image.src = canvas.toDataURL("image/jpeg", 0.92);
+      image.alt = `Magazine page ${pageNumber}`;
+      image.loading = "lazy";
+
+      pageWrapper.appendChild(image);
+      pageElements.push(pageWrapper);
+    }
+
+    return pageElements;
+  };
+
+  renderPdf().then(initializeFlipbook).catch(handleError);
 });
 
