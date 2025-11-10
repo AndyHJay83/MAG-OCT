@@ -1,0 +1,129 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #1c1c1c;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.site-header {
+  background: linear-gradient(135deg, #141e30, #243b55);
+  color: #ffffff;
+  padding: 1.5rem 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.site-header .container {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.site-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.25rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.open-pdf-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  color: #141e30;
+  background-color: #ffffff;
+  box-shadow: 0 6px 18px rgba(20, 30, 48, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.open-pdf-button:hover,
+.open-pdf-button:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(20, 30, 48, 0.25);
+}
+
+.open-pdf-button:active {
+  transform: translateY(0);
+}
+
+main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.flipbook-wrapper {
+  width: min(100vw, 960px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#flipbook {
+  width: 100%;
+  max-width: 864px;
+  aspect-ratio: 800 / 1100;
+}
+
+#flipbook .page {
+  width: 100%;
+  height: 100%;
+}
+
+#flipbook img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.site-footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.95rem;
+  color: #4a4a4a;
+}
+
+@media (max-width: 768px) {
+  .site-header .container {
+    flex-direction: column;
+  }
+
+  .open-pdf-button {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  main {
+    padding: 1.5rem 1rem;
+  }
+
+  #flipbook {
+    max-width: 100%;
+  }
+}
+
