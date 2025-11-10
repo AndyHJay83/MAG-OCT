@@ -5,43 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MAG-OCT Flipbook</title>
     <link rel="stylesheet" href="./style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/page-flip.browser.min.js" defer></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"
-      integrity="sha512-j7GQ3hPRHLxBq7+R36zYNBU2mRlKmxFoMIOnGSkqBp7xnY7AtV3gv0cij+UNRalAM829BwC+Q9pJRrVug0+HFw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-      defer
-    ></script>
-    <script src="./script.js" defer></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        window.location.replace("./assets/magazine.pdf");
+      });
+    </script>
   </head>
   <body>
-    <header class="site-header">
-      <div class="container">
-        <h1 class="site-title">MAG-OCT</h1>
-        <a class="open-pdf-button" href="./assets/magazine.pdf" target="_blank" rel="noopener">
-          Open PDF
-        </a>
-      </div>
-    </header>
-    <main>
-      <section class="pdf-viewer">
-        <h2>Magazine PDF Viewer</h2>
-        <div class="pdf-frame">
-          <iframe
-            src="./assets/magazine.pdf#view=FitH"
-            title="MAG-OCT PDF Viewer"
-            allow="fullscreen"
-          ></iframe>
-        </div>
-      </section>
-      <section class="flipbook-wrapper">
-        <div id="flipbook"></div>
-      </section>
+    <main class="direct-redirect">
+      <h1 class="site-title">MAG-OCT</h1>
+      <p>Loading the magazine. If you are not redirected automatically, use the link below.</p>
+      <a class="open-pdf-button" href="./assets/magazine.pdf">Open MAG-OCT PDF</a>
     </main>
-    <footer class="site-footer">
-      <p>Tap or swipe to turn pages.</p>
-    </footer>
+    <noscript>
+      <p>
+        JavaScript is required for automatic redirection. Please
+        <a href="./assets/magazine.pdf">open the PDF manually</a>.
+      </p>
+    </noscript>
   </body>
 </html>
 
